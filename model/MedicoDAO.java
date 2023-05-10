@@ -19,7 +19,7 @@ public class MedicoDAO {
         this.proximoId=1;
     }
    
-    public void cadastrar(Medico medico) {
+    public void adicionarMedico(Medico medico) {
         medico.setId(proximoId);
         medico.setDataCriacao(new Date());
         medico.setDataModificacao(new Date());
@@ -27,7 +27,7 @@ public class MedicoDAO {
         proximoId++;
     }
     
-    public Medico buscarPorId(int id) {
+    public Medico buscarMedicoPorId(int id) {
     	for (Medico medico : medicos) {
             if (medico!=null && medico.getId()==id) {
                 return medico;
@@ -36,11 +36,11 @@ public class MedicoDAO {
         return null;
     }
     
-    public Medico[] listar() {
+    public Medico[] listarMedicos() {
         return this.medicos;
     }
     
-    public void atualizar(Medico medico) {
+    public void atualizarMedico(Medico medico) {
         for (int i=0; i<medicos.length; i++) {
             if (medicos[i]!=null && medicos[i].getId()==medico.getId()) {
             	medicos[i] = medico;
@@ -50,7 +50,7 @@ public class MedicoDAO {
         }
     }
     
-    public void excluir(int id) {
+    public void excluirMedico(int id) {
     	for (int i=0; i< medicos.length; i++) {
             if (medicos[i]!=null && medicos[i].getId()==id) {
                 medicos[i] = null;
