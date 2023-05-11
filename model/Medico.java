@@ -4,28 +4,31 @@
  */
 package model;
 
-import java.util.Date;
+import java.time.LocalDate;
 /**
  *
  * @author nathan.santos
  */
 public class Medico {
+    static int contadorMedicos;
     private int id;
     private String CRM;
     private Pessoa pessoa;
     private String especialidade;
-    private Date dataCriacao;
-    private Date dataModificacao;
+    private LocalDate dataCriacao;
+    private LocalDate dataModificacao;
 
     //Construtor
-    public Medico(int id, String CRM, Pessoa pessoa, String especialidade, Date dataCriacao, Date dataModificacao) {
-        super();
-        this.id = id;
+    public Medico(String CRM, Pessoa pessoa, String especialidade) {
+        this.id = pessoa.getId();
         this.CRM = CRM;
         this.pessoa = pessoa;
         this.especialidade = especialidade;
-        this.dataCriacao = dataCriacao;
-        this.dataModificacao = dataModificacao;
+        this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
+        // Alterando algumas informações na pessoa já cadastrada que receberá o papel de médico
+        this.pessoa.setTipoUsuario(3);
+        this.pessoa.setDataModificacao(LocalDate.now());
     }
 
     //Getters
@@ -45,16 +48,16 @@ public class Medico {
         return especialidade;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public Date getDataModificacao() {
+    public LocalDate getDataModificacao() {
         return dataModificacao;
     }
 
     //Setters
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
     
@@ -62,7 +65,7 @@ public class Medico {
         this.CRM = CRM;
     }
 
-    public void setPessoa(Pessoa pessoa) {
+    private void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
     }
 
@@ -70,11 +73,11 @@ public class Medico {
         this.especialidade = especialidade;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    private void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public void setDataModificacao(Date dataModificacao) {
+    public void setDataModificacao(LocalDate dataModificacao) {
         this.dataModificacao = dataModificacao;
     }
 
