@@ -4,10 +4,8 @@
  */
 package view;
 
-import java.util.Date;
-import controller.PessoaController;
-import model.Pessoa;
-        
+import controller.MenuController;
+
 /**
  *
  * @author nathan.santos
@@ -16,8 +14,7 @@ import model.Pessoa;
 
 public class Teste {
     public static void main(String[] args){
-        //Receba
-        
-    } 
-    
+        MenuController menuController = new MenuController();
+        menuController.run();
+    }   
 }

@@ -4,13 +4,14 @@
  */
 package model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  *
  * @author nathan.santos
  */
 public class Pessoa {
+    static int contadorPessoas;
     private int id;
     private String nome;
     private String endereco;
@@ -18,22 +19,22 @@ public class Pessoa {
     private String telefone;
     private String login;
     private String senha;
-    private String tipoUsuario;
-    private Date dataCriacao;
-    private Date dataModificacao;
+    private int tipoUsuario; //0 - Administrador do sistema / Dono Franquia || 1 - Dono unidade franquia || 2 - Administrativo || 3 - Médico || 4 - Paciente
+    private LocalDate dataCriacao;
+    private LocalDate dataModificacao;
    
     //Construtor
-    public Pessoa(int id, String nome, String endereco, String cpf, String telefone, String login, String senha, String tipoUsuario, Date dataCriacao, Date dataModificacao) {
-        this.id = id;
+    public Pessoa(String nome, String endereco, String cpf, String telefone, String senha) {
+        this.id = ++Pessoa.contadorPessoas;
         this.nome = nome;
         this.endereco = endereco;
         this.cpf = cpf;
         this.telefone = telefone;
-        this.login = login;
+        this.login = this.nome.toLowerCase().split(" ")[0].concat(cpf.substring(0, 3));
         this.senha = senha;
-        this.tipoUsuario = tipoUsuario;
-        this.dataCriacao = dataCriacao;
-        this.dataModificacao = dataModificacao;
+        this.tipoUsuario = 4;
+        this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
     }
     
     //Getters
@@ -65,24 +66,24 @@ public class Pessoa {
         return senha;
     }
 
-    public String getTipoUsuario() {
+    public int getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public Date getDataModificacao() {
+    public LocalDate getDataModificacao() {
         return dataModificacao;
     }
 
     //Setters
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 
-    public void setNome(String nome) {
+    private void setNome(String nome) {
         this.nome = nome;
     }
 
@@ -90,7 +91,7 @@ public class Pessoa {
         this.endereco = endereco;
     }
 
-    public void setCpf(String cpf) {
+    private void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
@@ -98,7 +99,7 @@ public class Pessoa {
         this.telefone = telefone;
     }
 
-    public void setLogin(String login) {
+    protected void setLogin(String login) {
         this.login = login;
     }
 
@@ -106,15 +107,15 @@ public class Pessoa {
         this.senha = senha;
     }
 
-    public void setTipoUsuario(String tipoUsuario) {
+    public void setTipoUsuario(int tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    private void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public void setDataModificacao(Date dataModificacao) {
+    public void setDataModificacao(LocalDate dataModificacao) {
         this.dataModificacao = dataModificacao;
     }
     

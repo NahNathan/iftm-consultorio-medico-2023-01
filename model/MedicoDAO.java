@@ -20,9 +20,8 @@ public class MedicoDAO {
     }
    
     public void adicionarMedico(Medico medico) {
-        medico.setId(proximoId);
-        medico.setDataCriacao(new Date());
-        medico.setDataModificacao(new Date());
+        //medico.setDataCriacao(new Date());
+        //medico.setDataModificacao(new Date());
         this.medicos[proximoId-1]=medico;
         proximoId++;
     }
@@ -44,7 +43,7 @@ public class MedicoDAO {
         for (int i=0; i<medicos.length; i++) {
             if (medicos[i]!=null && medicos[i].getId()==medico.getId()) {
             	medicos[i] = medico;
-            	medico.setDataModificacao(new Date());
+            	//medico.setDataModificacao(new Date());
                 break;
             }
         }
