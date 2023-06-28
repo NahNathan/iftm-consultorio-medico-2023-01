@@ -4,7 +4,13 @@
  */
 package model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -12,139 +18,220 @@ import java.time.LocalDate;
  */
 public class PessoaDAO {
 
-    private Pessoa[] pessoas;
+    private Pessoa pessoa = new Pessoa();
 
-    public PessoaDAO() {
-        this.pessoas = new Pessoa[100];
+    // Adicionando uma pessoa ao banco
+    public boolean adicionarPessoa(Pessoa p) {
+        String sql = "insert into pessoa"
+                + " (nome, endereco, cpf, telefone, login, senha, tipoUsuario, dataCriacao, dataModificacao)"
+                + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        Pessoa admin = new Pessoa("Luiz Felippe", "Rua Rahif Esper Sallum, 33", "00987654321", "034900000000", "admin");
-        admin.setLogin("admin");
-        admin.setTipoUsuario(0);
-        adicionarPessoa(admin);
-        Pessoa dono = new Pessoa("Nathan Rodrigues", "Rua dos Alfeneiros, 4", "12345678900", "034999999999", "123");
-        dono.setLogin("nathan123");
-        dono.setTipoUsuario(1);
-        adicionarPessoa(dono);
-        
-        // Adicionando algumas pessoas no sistema para fins de teste
-        //0 - Administrador do sistema / Dono Franquia || 1 - Dono unidade franquia || 2 - Administrativo || 3 - Médico || 4 - Paciente
-        Pessoa p1 = new Pessoa("Amando Aula", "Rua Amado Batista, 28", "12345612398", "034999832145", "Senh4");
-        p1.setLogin("amando123");
-        p1.setTipoUsuario(4);
-        adicionarPessoa(p1);
-        Pessoa p2 = new Pessoa("Patricia Yugiohto", "Rua David Bowie, 72", "32335652798", "034997332105", "UberabA");
-        p2.setLogin("patricia323");
-        p2.setTipoUsuario(4);
-        adicionarPessoa(p2);
-        Pessoa p3 = new Pessoa("Gustavo Java", "Avenida da Desgraça, 113", "42009356711", "011998990876", "AmoC");
-        p3.setLogin("gustavo420");
-        p3.setTipoUsuario(3);
-        adicionarPessoa(p3);
-        Pessoa p4 = new Pessoa("Eduardo Belo Profe", "Rua Smart Fit, 308", "69089965209", "034900324567", "PasseiEmP00");
-        p4.setLogin("eduardo690");
-        p4.setTipoUsuario(2);
-        adicionarPessoa(p4);
-        Pessoa p5 = new Pessoa("Calvino Castejon Alves Massado", "Avenida do Cabelo, 998", "95175385233", "034978634589", "MimDePapai");
-        p5.setLogin("calvino951");
-        p5.setTipoUsuario(1);
-        adicionarPessoa(p5);
-    }
+        try (Connection c = new ConnectionFactory().getConnection(); PreparedStatement stmt = c.prepareStatement(sql)) {
+            // Setando os valores 
+            stmt.setString(1, p.getNome());
+            stmt.setString(2, p.getEndereco());
+            stmt.setString(3, p.getCpf());
+            stmt.setString(4, p.getTelefone());
+            stmt.setString(5, p.getLogin());
+            stmt.setString(6, p.getSenha());
+            stmt.setInt(7, p.getTipoUsuario());
+            stmt.setDate(8, java.sql.Date.valueOf(p.getDataCriacao()));
+            stmt.setDate(9, java.sql.Date.valueOf(p.getDataModificacao()));
 
-    public boolean adicionarPessoa(Pessoa pessoa) {
-        for (int i = 0; i < pessoas.length; i++) {
-            if (pessoas[i] == null) {
-                pessoas[i] = pessoa;
-
-                return true;
-            }
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         return false;
     }
 
+    // loginSenha[0] = login && loginSenha[1] = senha
+    // Ao logar no sistema 
     public Pessoa obterPessoaPorLogin(String[] loginSenha) {
-        for (int i = 0; i < pessoas.length; i++) {
-            if (pessoas[i] != null && (pessoas[i].getLogin().equals(loginSenha[0]) && pessoas[i].getSenha().equals(loginSenha[1]))) {
-                return pessoas[i];
+        String sql = "select * from pessoa where login = ? and senha = ?";
+        //Map<Integer, Pessoa> map = new HashMap<>();
+        Pessoa p = new Pessoa();
+        //int id;
+
+        try (Connection c = new ConnectionFactory().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            // Setando os valores para a query
+            ps.setString(1, loginSenha[0]);
+            ps.setString(2, loginSenha[1]);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    //id = rs.getInt("id");
+                    p.setId(rs.getInt("id"));
+                    p.setNome(rs.getString("nome"));
+                    p.setEndereco(rs.getString("endereco"));
+                    p.setCpf(rs.getString("cpf"));
+                    p.setTelefone(rs.getString("telefone"));
+                    p.setLogin(rs.getString("login"));
+                    p.setSenha(rs.getString("senha"));
+                    p.setTipoUsuario(rs.getInt("tipoUsuario"));
+                    p.setDataCriacao(rs.getDate("dataCriacao").toLocalDate());
+                    p.setDataModificacao(rs.getDate("dataModificacao").toLocalDate());
+
+                    //map.put(id, p);
+                    return p;
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
         return null;
     }
 
     public Pessoa obterPessoaPorId(int id) {
-        for (int i = 0; i < pessoas.length; i++) {
-            if (pessoas[i] != null && pessoas[i].getId() == id) {
-                return pessoas[i];
+        String sql = "select * from pessoa where id = ?";
+        Pessoa p = new Pessoa();
+
+        try (Connection c = new ConnectionFactory().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            // Setando os valores para a query
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    p.setId(rs.getInt("id"));
+                    p.setNome(rs.getString("nome"));
+                    p.setEndereco(rs.getString("endereco"));
+                    p.setCpf(rs.getString("cpf"));
+                    p.setTelefone(rs.getString("telefone"));
+                    p.setLogin(rs.getString("login"));
+                    p.setSenha(rs.getString("senha"));
+                    p.setTipoUsuario(rs.getInt("tipoUsuario"));
+                    p.setDataCriacao(rs.getDate("dataCriacao").toLocalDate());
+                    p.setDataModificacao(rs.getDate("dataModificacao").toLocalDate());
+
+                    return p;
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
         return null;
     }
 
     public boolean validarPessoaPorLogin(String[] loginSenha) {
-        for (int i = 0; i < pessoas.length; i++) {
-            if (pessoas[i] != null && (pessoas[i].getLogin().equals(loginSenha[0]) && pessoas[i].getSenha().equals(loginSenha[1]))) {
-                return true;
+        String sql = "select id from pessoa where login = ? and senha = ?";
+
+        try (Connection c = new ConnectionFactory().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            // Setando os valores para a query
+            ps.setString(1, loginSenha[0]);
+            ps.setString(2, loginSenha[1]);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return true;
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         return false;
     }
 
-    public void listarPessoas() {
-        Pessoa[] pessoasExistentes = new Pessoa[Pessoa.contadorPessoas];
-        for (int i = 0; i < Pessoa.contadorPessoas; i++) {
-            pessoasExistentes[i] = pessoas[i];
-        }
+    public String listarPacientes() {
+        String pacientes = "";
+        String sql = "select id, nome, tipoUsuario from pessoa where tipoUsuario = 4";
 
-        for (int i = 0; i < pessoasExistentes.length; i++) {
-            System.out.println(pessoasExistentes[i].toString());
-        }
-    }
+        try (Connection connection = new ConnectionFactory().getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
 
-    public Pessoa editarPessoa(Pessoa pessoa) {
-        for (int i = 0; i < Pessoa.contadorPessoas; i++) {
-            if (pessoas[i].getId() == pessoa.getId()) {
-                return pessoas[i];
-            }
-        }
-        return null;
-    }
-
-    public void removerPessoa(int id) {
-        for (int i = 0; i < Pessoa.contadorPessoas; i++) {
-            if (pessoas[i].getId() == id) {
-                pessoas[i] = null;
-                //Arrumar as posições da frente
-                for (int j = i; j < Pessoa.contadorPessoas - 1; j++) {
-                    pessoas[j] = pessoas[j + 1];
+            try (ResultSet rs = ps.executeQuery()) {
+                pacientes += "\n Pacientes cadastrados no sistema:\n";
+                while (rs.next()) {
+                    pacientes += "\n ID: " + rs.getString("id") + " | Nome: " + rs.getString("nome") + " | Tipo de Usuário: " + pessoa.getTipoUsuarioString(rs.getInt("tipoUsuario"));
                 }
-                Pessoa.contadorPessoas--;
-                break;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
+        if (pacientes.equals("")) {
+            pacientes += "Nenhum paciente cadastrado!";
+        }
+        return pacientes;
     }
 
-    public String[] obterNomesPessoas() {
-        String[] nomesPessoas = new String[Pessoa.contadorPessoas - 2]; // Subtrai o admin do sistema e o dono da franquia
-        for (int i = 2; i < pessoas.length; i++) {
-            if (pessoas[i] != null) {
-                nomesPessoas[i - 2] = pessoas[i].getNome();
+    public String listarPessoasCadastradas() { // Exceto admin e dono franquia
+        String listaPessoas = "";
+        String sql = "select id, nome, tipoUsuario from pessoa where tipoUsuario != 0";
+
+        try (Connection connection = new ConnectionFactory().getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                listaPessoas += "\n Pessoas cadastradas no sistema:\n";
+                while (rs.next()) {
+                    listaPessoas += "\n ID: " + rs.getString("id") + " | Nome: " + rs.getString("nome") + " | Tipo de Usuário: " + pessoa.getTipoUsuarioString(rs.getInt("tipoUsuario"));
+                }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return nomesPessoas;
+
+        if (listaPessoas.equals("")) {
+            listaPessoas += "Nenhuma pessoa cadastrada!";
+        }
+        return listaPessoas;
     }
 
-    public String[] obterIdPessoas() {
-        String[] idPessoas = new String[Pessoa.contadorPessoas - 2]; // Subtrai o admin do sistema e o dono da franquia
-        for (int i = 2; i < pessoas.length; i++) {
-            if (pessoas[i] != null) {
-                idPessoas[i - 2] = Integer.toString(pessoas[i].getId());
-            }
-        }
-        return idPessoas;
-    }
+    public boolean editarPessoa(String[] dadosEditados) { // [0]: Id | [1]: tipo de Informação | [2]: Informação editada
+        String sql = "update pessoa set ? = ?, dataModificacao = ? where id = ?";
 
-    public int obterQtdPessoas() {
-        return Pessoa.contadorPessoas;
+        try (Connection connection = new ConnectionFactory().getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            if (Integer.parseInt(dadosEditados[1]) == 1) { // Editar Nome
+                stmt.setString(1, "nome");
+            } else if (Integer.parseInt(dadosEditados[1]) == 2) { // Editar Endereço
+                stmt.setString(1, "endereco");
+            } else if (Integer.parseInt(dadosEditados[1]) == 3) { // Editar Telefone
+                stmt.setString(1, "telefone");
+            } else if (Integer.parseInt(dadosEditados[1]) == 4) { // Editar Senha
+                stmt.setString(1, "senha");
+            } else if (Integer.parseInt(dadosEditados[1]) == 5) { // Editar Tipo de Usuario
+                // 1 - Dono Unidade Franquia | 2 - Gerente Administrativo | 3 - Médico | 4 - Paciente
+                stmt.setString(1, "tipoUsuario");
+            }
+
+            stmt.setString(2, dadosEditados[2]);
+            stmt.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+            stmt.setInt(4, Integer.parseInt(dadosEditados[0]));
+            stmt.execute();
+
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+//    public String[] obterNomesPessoas() {
+//        String[] nomesPessoas = new String[Pessoa.contadorPessoas - 1]; // Subtrai o admin do sistema 
+//        for (int i = 1; i < pessoas.length; i++) {
+//            if (pessoas[i] != null) {
+//                nomesPessoas[i - 1] = pessoas[i].getNome();
+//            }
+//        }
+//        return nomesPessoas;
+//    }
+//
+//    public String[] obterIdPessoas() {
+//        String[] idPessoas = new String[Pessoa.contadorPessoas - 1]; // Subtrai o admin do sistema 
+//        for (int i = 1; i < pessoas.length; i++) {
+//            if (pessoas[i] != null) {
+//                idPessoas[i - 1] = Integer.toString(pessoas[i].getId());
+//            }
+//        }
+//        return idPessoas;
+//    }
+//
+//    public int obterQtdPessoas() {
+//        return Pessoa.contadorPessoas;
+//    }
 }

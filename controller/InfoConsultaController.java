@@ -4,32 +4,36 @@
  */
 package controller;
 
+import java.time.LocalDate;
+import model.Consulta;
 import model.InfoConsulta;
 import model.InfoConsultaDAO;
 /**
  *
- * @author nathan.santos
+ * @author nathan.santos, lfelippe
  */
 public class InfoConsultaController {
     private InfoConsultaDAO dao = new InfoConsultaDAO();
+    private ConsultaController consultaController = new ConsultaController();
     
-    public void criarInfoConsulta(InfoConsulta info) {
-        dao.criarInfoConsulta(info);
+    public boolean criarInfoConsulta(String descricao, int idConsulta) {
+        InfoConsulta info = new InfoConsulta();
+        info.setConsulta(this.consultaController.obterConsultaPorId(idConsulta));
+        info.setDataCriacao(LocalDate.now());
+        info.setDataModificacao(LocalDate.now());
+        
+        return this.dao.criarInfoConsulta(info);
     }
 
-    public InfoConsulta obterInfoConsultaPorId(int id) {
-        return dao.obterInfoConsultaPorId(id);
-    }
+//    public InfoConsulta obterInfoConsultaPorId(int id) {
+//        return this.dao.obterInfoConsultaPorId(id);
+//    }
+//
+//    public String obterDescricaoInfoConsultaPorId(int id) {
+//        return this.dao.obterDescricaoInfoConsultaPorId(id);
+//    }
 
-    public InfoConsulta[] listarTodas() {
-        return dao.listarTodas();
-    }
-
-    public void editarInfoConsulta(InfoConsulta info) {
-        dao.editarInfoConsulta(info);
-    }
-
-    public void deletarInfoConsulta(int id) {
-        dao.deletarInfoConsulta(id);
-    }
+//    public boolean editarInfoConsulta(String[] infoConsultaEditada) {
+//        return this.dao.editarInfoConsulta(this.obterInfoConsultaPorId(Integer.parseInt(infoConsultaEditada[0])), infoConsultaEditada[1]);
+//    }
 }
