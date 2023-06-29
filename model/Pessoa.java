@@ -5,13 +5,15 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  *
  * @author nathan.santos
  */
 public class Pessoa {
-    static int contadorPessoas;
+
     private int id;
     private String nome;
     private String endereco;
@@ -22,26 +24,12 @@ public class Pessoa {
     private int tipoUsuario; //0 - Administrador do sistema / Dono Franquia || 1 - Dono unidade franquia || 2 - Administrativo || 3 - Médico || 4 - Paciente
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
-   
-    //Construtor
-    public Pessoa(String nome, String endereco, String cpf, String telefone, String senha) {
-        this.id = ++Pessoa.contadorPessoas;
-        this.nome = nome;
-        this.endereco = endereco;
-        this.cpf = cpf;
-        this.telefone = telefone;
-        this.login = this.nome.toLowerCase().split(" ")[0].concat(cpf.substring(0, 3));
-        this.senha = senha;
-        this.tipoUsuario = 4;
-        this.dataCriacao = LocalDate.now();
-        this.dataModificacao = LocalDate.now();
-    }
-    
+
     //Getters
     public int getId() {
         return id;
     }
-
+    
     public String getNome() {
         return nome;
     }
@@ -79,11 +67,11 @@ public class Pessoa {
     }
 
     //Setters
-    private void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
-
-    private void setNome(String nome) {
+    
+    public void setNome(String nome) {
         this.nome = nome;
     }
 
@@ -91,7 +79,7 @@ public class Pessoa {
         this.endereco = endereco;
     }
 
-    private void setCpf(String cpf) {
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
@@ -99,7 +87,7 @@ public class Pessoa {
         this.telefone = telefone;
     }
 
-    protected void setLogin(String login) {
+    public void setLogin(String login) {
         this.login = login;
     }
 
@@ -111,16 +99,39 @@ public class Pessoa {
         this.tipoUsuario = tipoUsuario;
     }
 
-    private void setDataCriacao(LocalDate dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
     public void setDataModificacao(LocalDate dataModificacao) {
         this.dataModificacao = dataModificacao;
     }
-    
+
+    public String getTipoUsuarioString(int tipo) {
+        //0 - Administrador do sistema / Dono Franquia || 1 - Dono unidade franquia || 2 - Administrativo || 3 - Médico || 4 - Paciente
+        switch (tipo) {
+            case 0:
+                return "Administrador";
+            case 1:
+                return "Responsavel pela Unidade";
+            case 2:
+                return "Gerente Administrativo";
+            case 3:
+                return "Médico";
+            default:
+                return "Paciente";
+        }
+    }
+
     @Override
     public String toString() {
-        return "Pessoa{" + "id=" + id + ", nome=" + nome + ", endereco=" + endereco + ", cpf=" + cpf + ", telefone=" + telefone + ", login=" + login + ", senha=" + senha + ", tipoUsuario=" + tipoUsuario + ", dataCriacao=" + dataCriacao + ", dataModificacao=" + dataModificacao + '}';
+        return "\n| " + this.getTipoUsuarioString(this.getTipoUsuario())
+                        + " | Nome: " + this.nome
+                        + " | CPF: " +  this.cpf
+                        + " | Endereço: " + this.endereco
+                        + " | Telefone: " + this.telefone
+                        + " | DataCriação: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                        + " | DataModificação: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                        + "\n";
     }
 }

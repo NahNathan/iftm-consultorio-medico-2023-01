@@ -4,36 +4,26 @@
  */
 package model;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
  * @author nathan.santos
  */
 public class Procedimento {
-    
+    //static int contadorProcedimentos;
     private int id;
     private String nome;
     private Consulta consulta;
-    private String diaHorario;
-    private String estado;
+    private LocalTime horario;
+    private LocalDate data;
+    private int estado; // (0 - Agendada | 2 - Cancelada | 1 - Realizada)
     private BigDecimal valor;
     private String laudo;
-    private Date dataCriacao;
-    private Date dataModificacao;
-
-    //Construtor
-    public Procedimento(int id, String nome, Consulta consulta, String diaHorario, String estado, BigDecimal valor, String laudo, Date dataCriacao, Date dataModificacao) {
-        this.id = id;
-        this.nome = nome;
-        this.consulta = consulta;
-        this.diaHorario = diaHorario;
-        this.estado = estado;
-        this.valor = valor;
-        this.laudo = laudo;
-        this.dataCriacao = dataCriacao;
-        this.dataModificacao = dataModificacao;
-    }
+    private LocalDate dataCriacao;
+    private LocalDate dataModificacao;
 
     //Getters
     public int getId() {
@@ -48,11 +38,15 @@ public class Procedimento {
         return consulta;
     }
 
-    public String getDiaHorario() {
-        return diaHorario;
+    public LocalTime getHorario() {
+        return horario;
     }
 
-    public String getEstado() {
+    public LocalDate getData() {
+        return data;
+    }
+
+    public int getEstado() {
         return estado;
     }
 
@@ -64,14 +58,14 @@ public class Procedimento {
         return laudo;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public Date getDataModificacao() {
+    public LocalDate getDataModificacao() {
         return dataModificacao;
     }
-
+     
     //Setters
     public void setId(int id) {
         this.id = id;
@@ -85,11 +79,15 @@ public class Procedimento {
         this.consulta = consulta;
     }
 
-    public void setDiaHorario(String diaHorario) {
-        this.diaHorario = diaHorario;
+    public void setHorario(LocalTime horario) {
+        this.horario = horario;
     }
 
-    public void setEstado(String estado) {
+    public void setData(LocalDate data) {
+        this.data = data;
+    }
+
+    public void setEstado(int estado) {
         this.estado = estado;
     }
 
@@ -101,16 +99,39 @@ public class Procedimento {
         this.laudo = laudo;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public void setDataModificacao(Date dataModificacao) {
+    public void setDataModificacao(LocalDate dataModificacao) {
         this.dataModificacao = dataModificacao;
+    }
+    
+    public String getEstadoString(int estado) {
+        switch (estado) {
+            case 0:
+                return "Vazio";
+            case 1:
+                return "Agendado";
+            case 2:
+                return "Cancelado";
+            default:
+                // estado == 3
+                return "Realizado";
+        }
     }
 
     @Override
     public String toString() {
-        return "Procedimento{" + "id=" + id + ", nome=" + nome + ", consulta=" + consulta + ", diaHorario=" + diaHorario + ", estado=" + estado + ", valor=" + valor + ", laudo=" + laudo + ", dataCriacao=" + dataCriacao + ", dataModificacao=" + dataModificacao + '}';
+        return "\nId: " + this.id
+                + "  |  Nome: " + this.nome
+                + "  |  Horario: " + this.horario.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+                + "  |  Data: " + this.data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                + "  |  Status: " + this.getEstadoString(this.estado)
+                + "  |  Valor: R$" + this.valor
+                + "  |  Laudo: " + this.laudo
+                + "  |  DataCriação: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                + "  |  DataModificação: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
+    
 }

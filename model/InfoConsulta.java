@@ -4,7 +4,8 @@
  */
 package model;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 /**
  *
  * @author nathan.santos
@@ -13,17 +14,8 @@ public class InfoConsulta {
     private int id;
     private Consulta consulta;
     private String descricao;
-    private Date dataCriacao;
-    private Date dataModificacao;
-
-    //Construtor
-    public InfoConsulta(int id, Consulta consulta, String descricao, Date dataCriacao, Date dataModificacao) {
-        this.id = id;
-        this.consulta = consulta;
-        this.descricao = descricao;
-        this.dataCriacao = dataCriacao;
-        this.dataModificacao = dataModificacao;
-    }
+    private LocalDate dataCriacao;
+    private LocalDate dataModificacao;
 
     //Getters
     public int getId() {
@@ -38,11 +30,11 @@ public class InfoConsulta {
         return descricao;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public Date getDataModificacao() {
+    public LocalDate getDataModificacao() {
         return dataModificacao;
     }
 
@@ -59,11 +51,11 @@ public class InfoConsulta {
         this.descricao = descricao;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public void setDataModificacao(Date dataModificacao) {
+    public void setDataModificacao(LocalDate dataModificacao) {
         this.dataModificacao = dataModificacao;
     }
 

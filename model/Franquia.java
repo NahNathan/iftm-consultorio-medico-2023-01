@@ -4,7 +4,8 @@
  */
 package model;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 /**
  *
  * @author nathan.santos
@@ -16,19 +17,8 @@ public class Franquia {
     private String cidade;
     private String endereco;
     private Pessoa responsavel;
-    private Date dataCriacao;
-    private Date dateCriacao;
-
-    public Franquia(int id, String nome, String cnpj, String cidade, String endereco, Pessoa responsavel, Date dataCriacao, Date dateCriacao) {
-        this.id = id;
-        this.nome = nome;
-        this.cnpj = cnpj;
-        this.cidade = cidade;
-        this.endereco = endereco;
-        this.responsavel = responsavel;
-        this.dataCriacao = dataCriacao;
-        this.dateCriacao = dateCriacao;
-    }
+    private LocalDate dataCriacao;
+    private LocalDate dataModificacao;
 
     //Getters
     public int getId() {
@@ -55,12 +45,12 @@ public class Franquia {
         return responsavel;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public Date getDateCriacao() {
-        return dateCriacao;
+    public LocalDate getDataModificacao() {
+        return dataModificacao;
     }
 
     //Setters
@@ -88,17 +78,24 @@ public class Franquia {
         this.responsavel = responsavel;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public void setDateCriacao(Date dateCriacao) {
-        this.dateCriacao = dateCriacao;
+    public void setDataModificacao(LocalDate dataModificacao) {
+        this.dataModificacao = dataModificacao;
     }
 
     @Override
     public String toString() {
-        return "Franquia{" + "id=" + id + ", nome=" + nome + ", cnpj=" + cnpj + ", cidade=" + cidade + ", endereco=" + endereco + ", responsavel=" + responsavel + ", dataCriacao=" + dataCriacao + ", dateCriacao=" + dateCriacao + '}';
+        return "\nId: " + this.id
+                + " | Nome: " + this.nome
+                + " | CNPJ: " + this.cnpj
+                + " | Cidade: " + this.cidade
+                + " | Endereço: " + this.endereco
+                + " | Responsável: " + this.responsavel.getNome()
+                + " | DataCriacao: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                + " | DataModificacao: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
     
 }

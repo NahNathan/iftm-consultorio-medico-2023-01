@@ -4,7 +4,9 @@
  */
 package model;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  *
  * @author nathan.santos
@@ -15,19 +17,8 @@ public class Unidade {
     private String cidade;
     private String endereco;
     private Pessoa responsavel;
-    private Date dataCriacao;
-    private Date dataModificacao;
-
-    //Construtor
-    public Unidade(int id, Franquia franquia, String cidade, String endereco, Pessoa responsavel, Date dataCriacao, Date dataModificacao) {
-        this.id = id;
-        this.franquia = franquia;
-        this.cidade = cidade;
-        this.endereco = endereco;
-        this.responsavel = responsavel;
-        this.dataCriacao = dataCriacao;
-        this.dataModificacao = dataModificacao;
-    }
+    private LocalDate dataCriacao;
+    private LocalDate dataModificacao;
 
     //Getters
     public int getId() {
@@ -50,11 +41,11 @@ public class Unidade {
         return responsavel;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public Date getDataModificacao() {
+    public LocalDate getDataModificacao() {
         return dataModificacao;
     }
 
@@ -79,16 +70,22 @@ public class Unidade {
         this.responsavel = responsavel;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public void setDataModificacao(Date dataModificacao) {
+    public void setDataModificacao(LocalDate dataModificacao) {
         this.dataModificacao = dataModificacao;
     }
 
     @Override
     public String toString() {
-        return "Unidade{" + "id=" + id + ", franquia=" + franquia + ", cidade=" + cidade + ", endereco=" + endereco + ", responsavel=" + responsavel + ", dataCriacao=" + dataCriacao + ", dataModificacao=" + dataModificacao + '}';
+        return "\nId: " + this.id
+                + " | Franquia: " + this.franquia.getNome()
+                + " | Cidade: " + this.cidade
+                + " | Endereço: " + this.endereco
+                + " | Responsável: " + this.responsavel.getNome()
+                + " | DataCriação: " + this.dataCriacao.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                + " | DataModificação: " + this.dataModificacao.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     } 
 }

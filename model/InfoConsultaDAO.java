@@ -4,63 +4,70 @@
  */
 package model;
 
+import controller.ConsultaController;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDate;
+
 /**
  *
  * @author nathan.santos
  */
 public class InfoConsultaDAO {
-    private InfoConsulta[] infos;
-    private int size;
-    private static int proximoId = 1;
 
-    public InfoConsultaDAO() {
-        infos = new InfoConsulta[10];
-        size = 0;
-    }
+    public boolean criarInfoConsulta(InfoConsulta info) {
+        String sql = "insert into InfoConsulta"
+                + " (consulta_id, descricao, dataCriacao, dataModificacao)"
+                + " values (?, ?, ?, ?)";
 
-    public void criarInfoConsulta(InfoConsulta info) {
-        if (size == infos.length) {
-            InfoConsulta[] newInfos = new InfoConsulta[infos.length * 2];
-            System.arraycopy(infos, 0, newInfos, 0, size);
-            infos = newInfos;
+        try (Connection c = new ConnectionFactory().getConnection(); PreparedStatement stmt = c.prepareStatement(sql)) {
+            // Setando os valores 
+            stmt.setInt(1, info.getConsulta().getId());
+            stmt.setString(2, info.getDescricao());
+            stmt.setDate(3, java.sql.Date.valueOf(info.getDataCriacao()));
+            stmt.setDate(4, java.sql.Date.valueOf(info.getDataModificacao()));
+
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        info.setId(proximoId++);
-        infos[size++] = info;
+
+        return false;
     }
 
-    public InfoConsulta obterInfoConsultaPorId(int id) {
-        for (int i = 0; i < size; i++) {
-            if (infos[i].getId() == id) {
-                return infos[i];
-            }
-        }
-        return null;
-    }
+//    public InfoConsulta obterInfoConsultaPorId(int id) {
+//        for (int i = 0; i < infoConsultas.length; i++) {
+//            if (infoConsultas[i] != null && infoConsultas[i].getId() == id) {
+//                return infoConsultas[i];
+//            }
+//        }
+//        return null;
+//    }
+//
+//    public String obterDescricaoInfoConsultaPorId(int id) {
+//        String descricao = "";
+//
+//        for (int i = 0; i < infoConsultas.length; i++) {
+//            if (infoConsultas[i] != null && infoConsultas[i].getId() == id) {
+//                descricao += infoConsultas[i].getDescricao();
+//            }
+//        }
+//
+//        if (descricao.equals("")) {
+//            descricao = "\nInformação da consulta não encontrada!\n";
+//        }
+//        return descricao;
+//    }
 
-    public InfoConsulta[] listarTodas() {
-        InfoConsulta[] allInfos = new InfoConsulta[size];
-        System.arraycopy(infos, 0, allInfos, 0, size);
-        return allInfos;
-    }
-
-    public void editarInfoConsulta(InfoConsulta info) {
-        for (int i = 0; i < size; i++) {
-            if (infos[i].getId() == info.getId()) {
-                infos[i] = info;
-                break;
-            }
-        }
-    }
-
-    public void deletarInfoConsulta(int id) {
-        for (int i = 0; i < size; i++) {
-            if (infos[i].getId() == id) {
-                for (int j = i; j < size - 1; j++) {
-                    infos[j] = infos[j + 1];
-                }
-                infos[--size] = null;
-                break;
-            }
-        }
-    }
+//    public boolean editarInfoConsulta(InfoConsulta info, String descricao) {
+//        for (int i = 0; i < infoConsultas.length; i++) {
+//            if (infoConsultas[i] != null && infoConsultas[i].getId() == info.getId()) {
+//                info.setDescricao(descricao);
+//                info.setDataModificacao(LocalDate.now());
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }
